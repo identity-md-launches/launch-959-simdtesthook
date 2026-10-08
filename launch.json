@@ -1,0 +1,31 @@
+{
+  "kind": "univ4_hook",
+  "hook": {
+    "contract": "SIMDTESTHook",
+    "constructorArgs": [
+      "$poolManager",
+      "0xd34a99bc0f67ae1bbd63c660e6d0b0dd03e263b7",
+      "0"
+    ],
+    "permissions": [
+      "beforeInitialize",
+      "beforeSwap",
+      "afterSwap",
+      "beforeSwapReturnDelta",
+      "afterSwapReturnDelta"
+    ]
+  },
+  "token": {
+    "contract": "SIMDTEST",
+    "name": "SIMDTEST",
+    "symbol": "SIMDTEST",
+    "decimals": 18
+  },
+  "pool": {
+    "pairedCurrency": "0xd34a99bc0f67ae1bbd63c660e6d0b0dd03e263b7",
+    "fee": 12500,
+    "tickSpacing": 60,
+    "initialPrice": "79228162514264337593543950336"
+  },
+  "notes": "SIMDTEST/IMD test launch supporting the SIMD ecosystem, ChatSIMD and the SIMD Hackathon. Both contracts are defined in src/SIMDTESTHook.sol. The token has a zero-argument constructor. Hook arguments follow the implemented constructor order: IPoolManager manager_, address pairedCurrency_, uint256 openBlock_. There is no launch-token constructor argument; beforeInitialize binds the other currency of the sorted SIMDTEST/IMD PoolKey. The hook records its deploying caller as initializer, and the PoolManager must pass that same sender during the one-time initialization. Deploy the hook at an address whose low 14 bits equal 0x20cc. Manager and paired-currency addresses must contain code. Open block 0 starts trading at initialization; uninitialized or pre-open trading reverts. Tick spacing 60 and initial sqrtPriceX96 2^96 match the existing test fixture, representing a 1:1 currency1/currency0 ratio in raw units. The hook accepts only LP fee 12500 and returns no LP fee override. The fixed SIMD 1% fee is external to this hook. All hook fees are denominated in IMD. Anti-snipe fees are 30%, 27%, 24%, 21%, 18%, 15%, 12%, 9%, 6% and 3% at open-block offsets 0 through 9, then zero from offset 10. They are donated to this pool's in-range liquidity through PoolManager.donate; if no liquidity is in range, donations are reserved separately until liquidity returns. A further 0.5% fee on user swaps accumulates for buybacks. Pair-specified swaps prorate fees to actual fills; token-specified swaps use the executed paired-currency delta, with integer rounding. Reserves can be held as paired ERC20 balances or PoolManager ERC6909 claims. Permissionless buybackAndBurn() redeems accumulated fees in this same pool and sends only purchased SIMDTEST to 0x000000000000000000000000000000000000dEaD. It reduces circulating supply without changing the token's constant totalSupply. Paired ERC20 currency is never burned; burning manager claims only settles accounting balances. Buybacks retain unspent reserves, use a prior observed block's price reference with a 1% adverse square-root-price bound, and support an optional minimum output. Their own swaps skip hook callbacks. The hook has no upgrade, owner, pause or reserve-withdrawal function; initialization authority is limited to binding the pool once. Supply and allocation policy, including pool seeding and the Hackathon donation, is separately versioned and is not configured by this manifest. Existing tests use a model PoolManager and cover both currency orderings, pre-open rejection, every anti-snipe block and post-window swaps, donations, fee accumulation, claim redemption, buybacks, burn destinations and reserve conservation."
+}
